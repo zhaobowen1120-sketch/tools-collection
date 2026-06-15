@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二保焊新手教程 —— 从上电开始</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #2d7fc1;
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6c757d;
+    --border: #dee2e6;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 20px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #2a5a8a 100%);
+    color: #fff;
+    padding: 40px 40px 36px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "⚡";
+    position: absolute;
+    right: 30px;
+    bottom: -10px;
+    font-size: 100px;
+    opacity: 0.12;
+  }
+  .hero h1 { font-size: 28px; margin-bottom: 12px; letter-spacing: 1px; }
+  .hero p { font-size: 15px; opacity: 0.88; line-height: 1.7; max-width: 680px; }
+
+  /* TOC */
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+  }
+  .toc h2 { font-size: 18px; margin-bottom: 12px; color: var(--primary); }
+  .toc ol {
+    list-style: none;
+    columns: 2;
+    column-gap: 28px;
+  }
+  .toc ol li {
+    break-inside: avoid;
+    margin-bottom: 4px;
+  }
+  .toc ol li a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background .15s;
+  }
+  .toc ol li a:hover { background: #eef5fb; }
+
+  /* Sections */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  .section h2 {
+    font-size: 22px;
+    color: var(--primary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section h3 {
+    font-size: 18px;
+    color: var(--primary);
+    margin: 20px 0 10px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+  .section h4 {
+    font-size: 16px;
+    color: var(--text);
+    margin: 16px 0 8px;
+    font-weight: 600;
+  }
+  .section p { margin-bottom: 12px; }
+  .section ul, .section ol { margin: 8px 0 12px 22px; }
+  .section li { margin-bottom: 4px; }
+  .section strong { color: #000; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  th {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8f9fc; }
+  tr:hover td { background: #eef5fb; }
+
+  /* Blockquotes */
+  blockquote {
+    background: #fff8e6;
+    border-left: 4px solid var(--warning);
+    padding: 12px 18px;
+    margin: 14px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+  }
+  blockquote.warn {
+    background: #fde8e8;
+    border-color: var(--danger);
+  }
+  blockquote.info {
+    background: #e8f4fd;
+    border-color: var(--info);
+  }
+  blockquote.success {
+    background: #e6f9ed;
+    border-color: var(--success);
+  }
+
+  /* Code */
+  code {
+    background: #eef0f4;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 14px;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .tag-red { background: #fde8e8; color: #b91c1c; }
+  .tag-green { background: #e6f9ed; color: #15803d; }
+  .tag-amber { background: #fff8e6; color: #92400e; }
+  .tag-blue { background: #e8f4fd; color: #1e40af; }
+
+  /* Steps */
+  .steps { counter-reset: step; }
+  .step {
+    counter-increment: step;
+    padding: 16px 20px 16px 56px;
+    position: relative;
+    background: #f8f9fc;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--accent);
+  }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .step strong:first-child { color: var(--accent); }
+
+  /* Tips */
+  .tip {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: #f0f7fe;
+    border-radius: 10px;
+    margin: 14px 0;
+    border: 1px solid #cce5ff;
+  }
+  .tip-icon { font-size: 20px; flex-shrink: 0; }
+  .tip-content { font-size: 14px; color: #333; }
+
+  /* QA */
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .qa-q {
+    padding: 12px 18px;
+    font-weight: 600;
+    background: #f0f4f8;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary);
+  }
+  .qa-a {
+    padding: 12px 18px 14px;
+    background: #fff;
+    border-top: 1px solid var(--border);
+  }
+  .qa-a ul { margin: 4px 0 4px 18px; }
+
+  /* Last note */
+  .final-note {
+    background: linear-gradient(135deg, var(--primary), #2a5a8a);
+    color: #fff;
+    padding: 24px 32px;
+    border-radius: 12px;
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .final-note strong { color: #ffd54f; }
+
+  /* Ref list */
+  .ref-list { list-style: none; margin-left: 0 !important; }
+  .ref-list li { margin-bottom: 6px; font-size: 14px; }
+  .ref-list li a { color: var(--accent); text-decoration: none; }
+  .ref-list li a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .container { padding: 12px; }
+    .hero { padding: 24px 20px; }
+    .hero h1 { font-size: 22px; }
+    .section { padding: 20px 16px; }
+    .toc ol { columns: 1; }
+    table { font-size: 13px; }
+    th, td { padding: 7px 8px; }
+    .step { padding: 14px 14px 14px 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Hero -->
+<div class="hero">
+  <h1>二保焊（CO₂气体保护焊）新手教程</h1>
+  <p>本文档专为零基础新手编写，按实际操作流程排序，从设备认识 → 安全准备 → 开机调试 → 参数调节 → 引弧焊接 → 收弧检查，一步步带你完成第一次焊接。</p>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h2>📖 目录</h2>
+  <ol>
+    <li><a href="#s1">认识你的设备</a></li>
+    <li><a href="#s2">安全第一</a></li>
+    <li><a href="#s3">开机与上电步骤</a></li>
+    <li><a href="#s4">参数调节（核心技能）</a></li>
+    <li><a href="#s5">焊接操作（动手实操）</a></li>
+    <li><a href="#s6">不同位置焊接要点</a></li>
+    <li><a href="#s7">焊接缺陷自查表</a></li>
+    <li><a href="#s8">焊后收尾工作</a></li>
+    <li><a href="#s9">新手常见问题 Q&amp;A</a></li>
+    <li><a href="#s10">推荐练习路径</a></li>
+  </ol>
+</div>
+
+<!-- Section 1 设备认识 -->
+<div class="section" id="s1">
+  <h2>一、认识你的设备</h2>
+  <p>二保焊系统由四大核心部分组成：</p>
+
+  <!-- SVG: 二保焊系统组成 overview -->
+  <div class="img-wrapper" style="text-align:center; margin:16px 0;">
+    <svg viewBox="0 0 700 220" style="max-width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+      <rect width="700" height="220" fill="#f8f9fc" rx="10"/>
+      <!-- Title -->
+      <text x="350" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a3a5c">二保焊系统组成示意图</text>
+      <!-- 焊机 -->
+      <rect x="20" y="50" width="110" height="80" rx="8" fill="#2d7fc1" opacity="0.9"/>
+      <text x="75" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">焊机</text>
+      <text x="75" y="100" text-anchor="middle" font-size="10" fill="#fff">(焊接电源)</text>
+      <text x="75" y="118" text-anchor="middle" font-size="9" fill="#d4e6f7">电流/电压调节</text>
+      <!-- 送丝机 -->
+      <rect x="160" y="55" width="90" height="70" rx="8" fill="#28a745" opacity="0.85"/>
+      <text x="205" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">送丝机构</text>
+      <text x="205" y="102" text-anchor="middle" font-size="9" fill="#d4f5dc">推丝式</text>
+      <text x="205" y="116" text-anchor="middle" font-size="9" fill="#d4f5dc">送丝滚轮</text>
+      <!-- 气瓶 -->
+      <rect x="280" y="45" width="90" height="90" rx="8" fill="#6c757d" opacity="0.85"/>
+      <ellipse cx="325" cy="80" rx="18" ry="28" fill="#e0e0e0" stroke="#999" stroke-width="1.5"/>
+      <text x="325" y="76" text-anchor="middle" font-size="8" fill="#333">CO₂</text>
+      <text x="325" y="90" text-anchor="middle" font-size="7" fill="#333">钢瓶</text>
+      <text x="325" y="122" text-anchor="middle" font-size="9" fill="#e0e0e0">供气系统</text>
+      <!-- 焊枪 -->
+      <rect x="410" y="55" width="90" height="70" rx="8" fill="#dc3545" opacity="0.85"/>
+      <text x="455" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">焊枪</text>
+      <text x="455" y="102" text-anchor="middle" font-size="9" fill="#fde8e8">导电嘴+喷嘴</text>
+      <text x="455" y="116" text-anchor="middle" font-size="9" fill="#fde8e8">触发开关</text>
+      <!-- 工件 -->
+      <rect x="540" y="60" width="110" height="60" rx="8" fill="#ffc107" opacity="0.8"/>
+      <text x="595" y="88" text-anchor="middle" font-size="13" font-weight="bold" fill="#664800">焊接工件</text>
+      <text x="595" y="106" text-anchor="middle" font-size="9" fill="#664800">搭铁线</text>
+      <!-- Arrows between boxes -->
+      <line x1="130" y1="90" x2="158" y2="90" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="250" y1="90" x2="278" y2="90" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="370" y1="90" x2="408" y2="90" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="500" y1="90" x2="538" y2="90" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Bottom labels -->
+      <text x="75" y="160" text-anchor="middle" font-size="10" fill="#555">① 焊接电源</text>
+      <text x="205" y="160" text-anchor="middle" font-size="10" fill="#555">② 送丝</text>
+      <text x="325" y="160" text-anchor="middle" font-size="10" fill="#555">③ 保护气体</text>
+      <text x="455" y="160" text-anchor="middle" font-size="10" fill="#555">④ 手持焊枪</text>
+      <text x="595" y="160" text-anchor="middle" font-size="10" fill="#555">⑤ 工件</text>
+      <!-- Flow description -->
+      <text x="350" y="192" text-anchor="middle" font-size="11" fill="#888">送丝 + 通气 + 通电 → 焊丝与工件间产生电弧 → 熔化焊丝形成焊缝</text>
+      <!-- Arrow marker def -->
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6" fill="#666"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3>1.1 焊机（焊接电源）</h3>
+  <ul>
+    <li>输出<strong>直流电</strong>，通常采用<strong>反接法（DCEP）</strong>：焊丝接正极（+），工件接负极（−）</li>
+    <li>具有平硬外特性（恒压特性），保证电弧稳定</li>
+    <li>面板上有电流调节旋钮、电压调节旋钮、送丝速度显示等</li>
+  </ul>
+
+  <h3>1.2 送丝机构</h3>
+  <ul>
+    <li>电机驱动送丝滚轮，将焊丝从焊丝盘均匀送入焊枪</li>
+    <li>常见为<strong>推丝式</strong>（焊枪轻巧，应用最广）</li>
+    <li>关键部件：送丝滚轮（有 V 型槽和 U 型槽之分，实芯焊丝用 V 型槽）、压紧手柄</li>
+  </ul>
+
+  <h3>1.3 焊枪（焊炬）</h3>
+  <ul>
+    <li>焊接操作中手持的部分</li>
+    <li>关键零件：<strong>导电嘴</strong>（紫铜或铬锆铜，磨损后及时更换）、<strong>喷嘴</strong>（铜镀铬或陶瓷，内壁需保持清洁）、触发开关</li>
+    <li>焊丝从导电嘴伸出，伸出长度称为<strong>干伸长度</strong></li>
+  </ul>
+
+  <h3>1.4 供气系统</h3>
+  <ul>
+    <li><strong>CO₂ 钢瓶</strong>：银白色，瓶身标有黑色"CO₂"字样</li>
+    <li><strong>预热器</strong>：防止减压阀结冰，36V 交流供电</li>
+    <li><strong>减压器 + 流量计</strong>：通常做成一体，用于调节和显示气体流量</li>
+    <li><strong>气管</strong>：连接气瓶 → 焊机 → 焊枪</li>
+  </ul>
+
+  <h3>1.5 辅助设备</h3>
+  <ul>
+    <li><strong>搭铁线（地线）</strong>：夹在工件上，构成焊接回路</li>
+    <li><strong>焊丝</strong>：最常用 ER50-6（国标）或 ER70S-6（美标），低碳钢焊接</li>
+    <li><strong>焊接面罩</strong>：建议使用自动变光面罩</li>
+  </ul>
+</div>
+
+<!-- Section 2 安全 -->
+<div class="section" id="s2">
+  <h2>二、安全第一（每一步都不可跳过！）</h2>
+
+  <h3>2.1 个人防护用品</h3>
+  <table>
+    <thead>
+      <tr><th>部位</th><th>防护装备</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>面部/眼部</td><td>焊接面罩（自动变光）</td><td><strong>切勿不戴面罩看电弧</strong>，否则会导致电光性眼炎（"打眼"）</td></tr>
+      <tr><td>手部</td><td>耐磨阻燃皮手套</td><td>袖口要覆盖手腕</td></tr>
+      <tr><td>身体</td><td>长袖阻燃工作服</td><td>扣紧袖口，严禁穿短袖、卷裤腿</td></tr>
+      <tr><td>脚部</td><td>绝缘安全鞋</td><td>防触电、防砸伤</td></tr>
+      <tr><td>呼吸</td><td>防尘口罩</td><td>密闭空间须用防毒面具或强制通风</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 作业环境检查（"六查"）</h3>
+  <ol>
+    <li><strong>查易燃物</strong>：作业半径 5 米内清除油漆、汽油、木屑等易燃物；无法清除的用防火毯覆盖</li>
+    <li><strong>查通风</strong>：室内保持良好通风，密闭空间必须强制排风</li>
+    <li><strong>查地面</strong>：干燥无油污、无水渍（防触电）</li>
+    <li><strong>查灭火器</strong>：确认灭火器在位有效</li>
+    <li><strong>查设备</strong>：电源线、地线、焊枪、气管无破损</li>
+    <li><strong>查气瓶</strong>：气瓶固定防止倾倒，阀门开闭正常</li>
+  </ol>
+
+  <h3>2.3 安全操作红线</h3>
+  <table>
+    <thead>
+      <tr><th>禁止行为</th><th>正确做法</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>不戴面罩直接引弧</td><td>遮住面部后再按开关</td></tr>
+      <tr><td>穿短袖、卷裤脚焊接</td><td>穿长袖阻燃服，扣紧裤脚</td></tr>
+      <tr><td>在密闭空间不开排风</td><td>强制通风 + 佩戴口罩</td></tr>
+      <tr><td>地面上有油污/易燃物</td><td>清理干净后再焊接</td></tr>
+      <tr><td>带压、带气容器上焊接</td><td>排空、清洗、确认安全后再焊</td></tr>
+      <tr><td>焊接电缆破损裸露使用</td><td>立即更换或包扎绝缘</td></tr>
+    </tbody>
+  </table>
+
+  <blockquote class="warn">
+    ⚠️ <strong>持证上岗</strong>：从事特种焊接作业须持有应急管理部门颁发的《特种作业操作证》（电气焊）。
+  </blockquote>
+</div>
+
+<!-- Section 3 开机步骤 -->
+<div class="section" id="s3">
+  <h2>三、开机与上电步骤（从通电开始）</h2>
+
+  <div class="steps">
+    <div class="step">
+      <strong>连接设备</strong><br>
+      ① 将<strong>搭铁线</strong>夹到工件上，接触面需打磨至露出金属光泽<br>
+      ② 将<strong>焊枪电缆</strong>连接到焊机输出端<br>
+      ③ 将<strong>气管</strong>从气瓶连接到焊机进气口
+    </div>
+    <div class="step">
+      <strong>打开气瓶</strong><br>
+      逆时针缓慢旋转 CO₂ 气瓶阀门，打开气源。查看减压阀高压表（显示瓶内压力），正常满瓶压力约 5~7 MPa。<br>
+      <strong>注意</strong>：CO₂ 是液态储存，压力受温度影响，只要瓶内有液态 CO₂ 即有正常输出。
+    </div>
+    <div class="step">
+      <strong>预热</strong><br>
+      打开焊机电源开关，预热器开始工作。<strong>必须预热 5 分钟</strong>，否则减压阀可能结冰堵塞。
+    </div>
+    <div class="step">
+      <strong>设置气体流量</strong><br>
+      调节流量计至 <strong>10~15 L/min</strong>（室内），室外或大风环境增大至 15~20 L/min。<br>
+      <strong>检测是否漏气</strong>：用肥皂水刷气管接头，冒泡即漏气。
+    </div>
+    <div class="step">
+      <strong>安装焊丝</strong><br>
+      <ol style="margin:2px 0 2px 18px;">
+        <li>打开送丝机侧盖</li>
+        <li>将焊丝盘装在盘轴上，焊丝<strong>从下方水平引出</strong></li>
+        <li>将焊丝头剪成<strong>平头</strong>（不要有毛刺）</li>
+        <li>打开压紧手柄，将焊丝送入送丝滚轮的 V 型槽中</li>
+        <li>确保焊丝进入送丝软管，关闭压紧手柄（<strong>压力不宜过大</strong>，以不打滑为准）</li>
+        <li>确认焊丝直径与送丝滚轮 V 型槽匹配（例如 1.0mm 焊丝 → 1.0mm V 型槽）</li>
+      </ol>
+    </div>
+    <div class="step">
+      <strong>送丝</strong><br>
+      将焊枪平摊在地面，<strong>完全伸直</strong>（不要弯曲）。按下焊枪触发开关或"快速送丝"按钮，焊丝露出后松开。用钳子将焊丝端部剪成 <strong>45° 尖角</strong>（便于引弧）。
+    </div>
+    <div class="step">
+      <strong>设置极性</strong><br>
+      确认焊机极性为 <strong>DCEP（直流反接）</strong>：<br>
+      <ul style="margin:2px 0 2px 18px;">
+        <li>焊枪电缆 → 正极（+）</li>
+        <li>搭铁线 → 负极（−）</li>
+      </ul>
+      初学者若装反，会导致飞溅极大、熔深浅。
+    </div>
+  </div>
+</div>
+
+<!-- Section 4 参数调节 -->
+<div class="section" id="s4">
+  <h2>四、参数调节（核心技能）</h2>
+
+  <h3>4.1 三个关键参数</h3>
+  <table>
+    <thead><tr><th>参数</th><th>作用</th><th>通俗理解</th></tr></thead>
+    <tbody>
+      <tr><td><strong>电流（送丝速度）</strong></td><td>决定送丝快慢</td><td>电流越大，焊丝送得越快</td></tr>
+      <tr><td><strong>电压</strong></td><td>决定焊丝熔化快慢</td><td>电压越大，焊丝熔化越快</td></tr>
+      <tr><td><strong>气体流量</strong></td><td>保护熔池</td><td>隔绝空气中的氧气</td></tr>
+    </tbody>
+  </table>
+  <blockquote class="success"><strong>核心原则</strong>：送丝速度 = 熔化速度，电弧才能稳定燃烧。</blockquote>
+
+  <h3>4.2 新手推荐参考值</h3>
+  <table>
+    <thead><tr><th>焊丝直径</th><th>推荐电流</th><th>推荐电压</th><th>适用板厚</th></tr></thead>
+    <tbody>
+      <tr><td>0.8mm</td><td>~100A</td><td>~18V</td><td>≤2mm（薄板）</td></tr>
+      <tr><td>1.0mm</td><td>120~200A</td><td>19~24V</td><td>2~5mm（中厚板）</td></tr>
+      <tr><td>1.2mm</td><td>150~280A</td><td>20~28V</td><td>≥5mm（常用规格）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 电流电压匹配公式</h3>
+  <p><strong>国产焊机</strong>（电流 &lt; 200A）：</p>
+  <blockquote><strong>U = (14 + 0.05 × I) ± 1.5V</strong></blockquote>
+  <p>例如：设定电流 150A → 电压 = 14 + 0.05×150 = <strong>21.5V</strong>，可调范围 20~23V</p>
+  <p><strong>日系焊机</strong>（电流 &lt; 200A）：</p>
+  <blockquote><strong>U = (16 + 0.04 × I) ± 1.5V</strong></blockquote>
+  <p>例如：设定电流 150A → 电压 = 16 + 0.04×150 = <strong>22V</strong>，可调范围 20.5~23.5V</p>
+
+  <h3>4.4 如何听声辨参数？</h3>
+
+  <!-- SVG: 听声辨参数示意 -->
+  <div class="img-wrapper" style="text-align:center; margin:16px 0;">
+    <svg viewBox="0 0 600 150" style="max-width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="150" fill="#f8f9fc" rx="10"/>
+      <text x="300" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a3a5c">听声音判断参数匹配</text>
+
+      <!-- Voltage too low -->
+      <rect x="18" y="40" width="170" height="95" rx="8" fill="#fde8e8" stroke="#dc3545" stroke-width="1"/>
+      <text x="103" y="62" text-anchor="middle" font-size="12" font-weight="bold" fill="#b91c1c">❌ 电压偏低</text>
+      <text x="103" y="80" text-anchor="middle" font-size="10" fill="#b91c1c">💥 "啪、啪、啪"爆断声</text>
+      <text x="103" y="96" text-anchor="middle" font-size="10" fill="#b91c1c">枪身抖动剧烈</text>
+      <text x="103" y="112" text-anchor="middle" font-size="10" fill="#b91c1c">飞溅大</text>
+      <text x="103" y="128" text-anchor="middle" font-size="9" fill="#888">→ ↑电压 或 ↓送丝速度</text>
+
+      <!-- Perfect -->
+      <rect x="210" y="40" width="170" height="95" rx="8" fill="#e6f9ed" stroke="#28a745" stroke-width="1.5"/>
+      <text x="295" y="62" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803d">✅ 完美匹配</text>
+      <text x="295" y="80" text-anchor="middle" font-size="10" fill="#15803d">🎵 "沙、沙、沙"平稳声</text>
+      <text x="295" y="96" text-anchor="middle" font-size="10" fill="#15803d">像煎培根的滋滋声</text>
+      <text x="295" y="112" text-anchor="middle" font-size="10" fill="#15803d">飞溅极少</text>
+      <text x="295" y="128" text-anchor="middle" font-size="9" fill="#888">→ 保持参数不变</text>
+
+      <!-- Voltage too high -->
+      <rect x="402" y="40" width="180" height="95" rx="8" fill="#fff8e6" stroke="#ffc107" stroke-width="1"/>
+      <text x="492" y="62" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400e">⚠️ 电压偏高</text>
+      <text x="492" y="80" text-anchor="middle" font-size="10" fill="#92400e">🔴 焊丝端部大熔球</text>
+      <text x="492" y="96" text-anchor="middle" font-size="10" fill="#92400e">飞溅大</text>
+      <text x="492" y="112" text-anchor="middle" font-size="10" fill="#92400e">熔池不稳</text>
+      <text x="492" y="128" text-anchor="middle" font-size="9" fill="#888">→ ↓电压 或 ↑送丝速度</text>
+    </svg>
+  </div>
+
+  <p>调试步骤：</p>
+  <ol>
+    <li>先设一个较低的电流值（如 120A），按公式算出电压</li>
+    <li>在废钢板上试焊</li>
+    <li><strong>听声音、看飞溅</strong>，逐步微调</li>
+  </ol>
+  <table>
+    <thead><tr><th>现象</th><th>问题</th><th>解决方法</th></tr></thead>
+    <tbody>
+      <tr><td><strong>啪、啪、啪</strong>的爆断声，枪抖动</td><td><span class="tag tag-red">电压偏低</span></td><td>↑ 增大电压 或 ↓ 减小送丝速度</td></tr>
+      <tr><td>焊丝端部形成<strong>大熔球</strong>，飞溅大</td><td><span class="tag tag-amber">电压偏高</span></td><td>↓ 降低电压 或 ↑ 加快送丝</td></tr>
+      <tr><td><strong>沙、沙、沙</strong>平稳细密声，飞溅少</td><td><span class="tag tag-green">完美匹配</span></td><td>保持参数</td></tr>
+      <tr><td>像<strong>煎培根</strong>的滋滋声</td><td><span class="tag tag-green">标准 MIG 声音</span></td><td>保持参数</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.5 调节口诀</h3>
+  <blockquote class="success">
+    <strong>电流管送丝，电压管熔化，两者要匹配，声音是标尺。</strong><br>
+    <strong>啪啪声电压低，大熔球电压高，沙沙平稳刚刚好！</strong>
+  </blockquote>
+</div>
+
+<!-- Section 5 焊接操作 -->
+<div class="section" id="s5">
+  <h2>五、焊接操作（动手实操）</h2>
+
+  <h3>5.1 焊枪握持与基本姿势</h3>
+  <ul>
+    <li>双手握枪更稳（尤其对新手），支撑手可轻扶焊枪后端</li>
+    <li>身体自然放松，不要耸肩</li>
+    <li>焊枪电缆不要扭曲打结</li>
+  </ul>
+
+  <h3>5.2 关键角度与尺寸</h3>
+
+  <!-- SVG: 焊枪角度与干伸长度 -->
+  <div class="img-wrapper" style="text-align:center; margin:16px 0;">
+    <svg viewBox="0 0 600 190" style="max-width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="190" fill="#f8f9fc" rx="10"/>
+      <text x="300" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a3a5c">焊枪角度与干伸长度示意（平焊）</text>
+
+      <!-- 工件（base metal） -->
+      <rect x="40" y="140" width="290" height="36" rx="3" fill="#a0aec0"/>
+      <text x="185" y="164" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">工件</text>
+
+      <!-- 焊枪 body -->
+      <rect x="150" y="28" width="22" height="80" rx="4" fill="#dc3545" opacity="0.85"/>
+      <!-- 喷嘴 -->
+      <polygon points="161,108 150,130 172,130" fill="#e86868" opacity="0.9"/>
+      <!-- 焊丝 -->
+      <line x1="161" y1="28" x2="161" y2="145" stroke="#333" stroke-width="2" stroke-dasharray="4,3"/>
+
+      <!-- Angle arc: 前后角度 90° -->
+      <path d="M149,28 L149,8" stroke="#2d7fc1" stroke-width="1.5" fill="none"/>
+      <path d="M149,28 L161,28" stroke="#2d7fc1" stroke-width="1.5" fill="none"/>
+      <path d="M149,8 A20,20 0 0,1 161,28" stroke="#2d7fc1" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+      <text x="140" y="14" font-size="10" fill="#2d7fc1">90°</text>
+
+      <!-- 干伸长度标注 -->
+      <line x1="170" y1="116" x2="215" y2="116" stroke="#ffc107" stroke-width="1.5"/>
+      <line x1="170" y1="116" x2="170" y2="145" stroke="#ffc107" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="215" y1="116" x2="215" y2="130" stroke="#ffc107" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="192" y="114" text-anchor="middle" font-size="10" fill="#b8860b" font-weight="bold">干伸长度</text>
+      <text x="192" y="126" text-anchor="middle" font-size="9" fill="#b8860b">10~20mm</text>
+
+      <!-- Right side: 推焊法 vs 拉焊法 -->
+      <text x="430" y="40" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a3a5c">推焊 vs 拉焊</text>
+
+      <!-- 推焊法 -->
+      <rect x="345" y="55" width="22" height="60" rx="4" fill="#28a745" opacity="0.85"/>
+      <polygon points="356,115 348,130 364,130" fill="#5cc07a" opacity="0.9"/>
+      <text x="356" y="92" text-anchor="middle" font-size="8" fill="#fff">焊枪</text>
+      <!-- arrow: 推 direction -->
+      <line x1="380" y1="90" x2="410" y2="90" stroke="#28a745" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+      <text x="395" y="85" text-anchor="middle" font-size="9" fill="#28a745">推焊法</text>
+      <text x="395" y="106" text-anchor="middle" font-size="8" fill="#888">保护好★新手推荐</text>
+
+      <!-- 拉焊法 -->
+      <rect x="475" y="55" width="22" height="60" rx="4" fill="#ffc107" opacity="0.85"/>
+      <polygon points="486,115 478,130 494,130" fill="#ffd966" opacity="0.9"/>
+      <text x="486" y="92" text-anchor="middle" font-size="8" fill="#664800">焊枪</text>
+      <!-- arrow: 拉 direction -->
+      <line x1="448" y1="90" x2="420" y2="90" stroke="#e6a800" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+      <text x="434" y="85" text-anchor="middle" font-size="9" fill="#e6a800">拉焊法</text>
+      <text x="434" y="106" text-anchor="middle" font-size="8" fill="#888">熔深大</text>
+
+      <defs>
+        <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6" fill="#28a745"/>
+        </marker>
+        <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6" fill="#e6a800"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="tip">
+    <span class="tip-icon">📏</span>
+    <div class="tip-content">
+      <strong>干伸长度</strong>（焊丝从导电嘴伸出的长度）：<strong>10~20mm</strong>（约为焊丝直径的 10 倍）<br>
+      太短 → 飞溅大，遮挡视线，易烧导电嘴<br>
+      太长 → 保护效果差，易出气孔
+    </div>
+  </div>
+  <p><strong>焊枪角度</strong>（以平焊为例）：</p>
+  <ul>
+    <li>前后方向（与焊缝垂直）：<strong>约 90°</strong></li>
+    <li>左右方向（与工件表面倾斜）：<strong>约 70~80°</strong>（后倾 10~15°）</li>
+    <li><strong>推焊法（左焊法）</strong>：焊枪向前推，新手推荐，保护效果好，可清晰观察焊缝</li>
+    <li><strong>拉焊法（右焊法）</strong>：焊枪向后拉，熔深更大</li>
+  </ul>
+
+  <h3>5.3 引弧</h3>
+  <ol>
+    <li>将焊丝端部（45°尖角）轻触工件表面</li>
+    <li>按下焊枪触发开关，电弧自动引燃</li>
+    <li><strong>倒退引弧法</strong>：在起始端前方约 15~20mm 处引弧，然后快速回拖到起点，开始正常焊接<br>这样可以预热起点，使焊缝充分熔合</li>
+    <li>若焊丝粘在工件上（"粘丝"），左右摇动焊枪使焊丝脱离</li>
+  </ol>
+
+  <h3>5.4 运条（运丝）方式</h3>
+  <table>
+    <thead><tr><th>运条方式</th><th>操作方法</th><th>适用场景</th></tr></thead>
+    <tbody>
+      <tr><td><strong>直线运丝</strong></td><td>焊枪沿焊缝直线匀速移动</td><td>薄板、窄焊缝的平/立/仰焊</td></tr>
+      <tr><td><strong>锯齿形摆动</strong></td><td>在焊缝两侧做锯齿形摆动，两侧稍作停留</td><td>中厚板填充和盖面，<strong>最常用</strong></td></tr>
+      <tr><td><strong>圆圈形摆动</strong></td><td>在焊缝中心做小圆圈运动</td><td>厚板平焊和立焊，增加熔深</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">
+    <span class="tip-icon">💡</span>
+    <div class="tip-content">
+      <strong>新人练习顺序</strong>：先练直线运丝 → 再练锯齿形摆动。<br>
+      <strong>运丝要点</strong>：采用<strong>手腕运条</strong>，保持匀速，<strong>两侧稍作停留</strong>（防咬边），中间快过，时刻观察<strong>熔池</strong>形状和大小。
+    </div>
+  </div>
+
+  <h3>5.5 焊接速度控制</h3>
+  <ul>
+    <li>一般 30~80 cm/min</li>
+    <li>合适速度的表现：熔池大小适中，焊缝宽度均匀</li>
+    <li><strong>太快</strong> → 熔深浅，保护差，易出气孔</li>
+    <li><strong>太慢</strong> → 熔池过大，易烧穿，焊缝过高</li>
+    <li>理想焊缝的正面应有均匀的鱼鳞纹</li>
+  </ul>
+
+  <h3>5.6 收弧</h3>
+  <p>收弧不当会产生<strong>弧坑裂纹</strong>，以下三种方法可有效避免：</p>
+  <ol>
+    <li><strong>反复断弧法</strong>：快速松开→按下触发开关，反复几次，逐滴滴入熔滴填满弧坑</li>
+    <li><strong>回焊法</strong>：收弧时沿焊缝往回焊一小段（10~20mm）</li>
+    <li><strong>使用收弧功能</strong>：较新焊机有"弧坑控制"功能，自动降低收弧电流</li>
+  </ol>
+  <blockquote class="info">
+    收弧后不要立即移开焊枪，保持 1~2 秒让保护气体继续覆盖熔池（<strong>延时气保护</strong>），防止高温焊缝氧化。
+  </blockquote>
+</div>
+
+<!-- Section 6 不同位置焊接 -->
+<div class="section" id="s6">
+  <h2>六、不同位置焊接要点</h2>
+  <p>学习顺序建议：<strong>平焊 → 立焊 → 横焊 → 仰焊</strong></p>
+
+  <!-- SVG: 四种焊接位置 -->
+  <div class="img-wrapper" style="text-align:center; margin:16px 0;">
+    <svg viewBox="0 0 600 160" style="max-width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="160" fill="#f8f9fc" rx="10"/>
+      <text x="300" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a3a5c">焊接位置 &amp; 焊枪角度</text>
+
+      <!-- 平焊 -->
+      <rect x="20" y="38" width="130" height="110" rx="8" fill="#e8f4fd" stroke="#2d7fc1" stroke-width="1"/>
+      <text x="85" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a3a5c">① 平焊</text>
+      <!-- 工件 -->
+      <rect x="35" y="105" width="100" height="12" rx="2" fill="#a0aec0"/>
+      <!-- 焊枪 -->
+      <rect x="72" y="67" width="8" height="30" rx="2" fill="#dc3545"/>
+      <polygon points="76,97 71,106 81,106" fill="#e86868"/>
+      <line x1="76" y1="106" x2="76" y2="115" stroke="#333" stroke-width="1.5"/>
+      <!-- 角度标注 -->
+      <path d="M72,67 L60,67" stroke="#2d7fc1" stroke-width="1" fill="none"/>
+      <path d="M72,67 L72,55" stroke="#2d7fc1" stroke-width="1" fill="none"/>
+      <path d="M60,67 A12,12 0 0,1 72,55" stroke="#2d7fc1" stroke-width="1" fill="none" stroke-dasharray="2,2"/>
+      <text x="59" y="66" font-size="8" fill="#2d7fc1">90°</text>
+      <text x="85" y="135" text-anchor="middle" font-size="9" fill="#555">锯齿形摆动</text>
+      <text x="85" y="145" text-anchor="middle" font-size="9" fill="#888">200~270A / 24~27V</text>
+
+      <!-- 立焊 -->
+      <rect x="165" y="38" width="130" height="110" rx="8" fill="#fff8e6" stroke="#ffc107" stroke-width="1"/>
+      <text x="230" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400e">② 立焊</text>
+      <!-- 工件 竖放 -->
+      <rect x="220" y="62" width="12" height="60" rx="2" fill="#a0aec0"/>
+      <!-- 焊枪 -->
+      <rect x="190" y="80" width="25" height="7" rx="2" fill="#dc3545"/>
+      <rect x="190" y="80" width="7" height="20" rx="2" fill="#dc3545"/>
+      <polygon points="193,100 192,107 214,107 215,100" fill="#e86868"/>
+      <!-- 标注 -->
+      <text x="230" y="128" text-anchor="middle" font-size="9" fill="#555">电流比平焊小15~20%</text>
+      <text x="230" y="138" text-anchor="middle" font-size="9" fill="#555">枪嘴向上倾60~70°</text>
+      <text x="230" y="145" text-anchor="middle" font-size="9" fill="#888">100~120A / 19~21V</text>
+
+      <!-- 横焊 -->
+      <rect x="310" y="38" width="130" height="110" rx="8" fill="#f0f7fe" stroke="#17a2b8" stroke-width="1"/>
+      <text x="375" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#0c6a7a">③ 横焊</text>
+      <!-- 工件 -->
+      <rect x="335" y="62" width="80" height="12" rx="2" fill="#a0aec0"/>
+      <rect x="335" y="82" width="12" height="50" rx="2" fill="#a0aec0"/>
+      <!-- 焊枪 -->
+      <rect x="375" y="102" width="7" height="20" rx="2" fill="#dc3545" transform="rotate(-15,378,112)"/>
+      <polygon points="375,122 371,128 380,130" fill="#e86868"/>
+      <text x="375" y="148" text-anchor="middle" font-size="9" fill="#555">上侧停留防咬边，下侧快过</text>
+      <text x="375" y="155" text-anchor="middle" font-size="8" fill="#888">130~150A / 20~22V</text>
+
+      <!-- 仰焊 -->
+      <rect x="455" y="38" width="130" height="110" rx="8" fill="#fde8e8" stroke="#dc3545" stroke-width="1"/>
+      <text x="520" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#b91c1c">④ 仰焊</text>
+      <!-- 工件 在上方 -->
+      <rect x="470" y="62" width="100" height="12" rx="2" fill="#a0aec0"/>
+      <!-- 焊枪 从下往上 -->
+      <rect x="498" y="82" width="8" height="28" rx="2" fill="#dc3545"/>
+      <polygon points="502,110 496,100 508,100" fill="#e86868"/>
+      <text x="520" y="130" text-anchor="middle" font-size="9" fill="#555">电流最小，严禁长弧</text>
+      <text x="520" y="140" text-anchor="middle" font-size="9" fill="#555">短弧操作</text>
+      <text x="520" y="155" text-anchor="middle" font-size="8" fill="#888">100~110A / 19~20V</text>
+    </svg>
+  </div>
+
+  <table>
+    <thead><tr><th>位置</th><th>关键要点</th><th>电流参考</th><th>电压参考</th></tr></thead>
+    <tbody>
+      <tr><td><strong>平焊</strong></td><td>枪与工件夹角 70~80°，锯齿形摆动最常用</td><td>200~270A</td><td>24~27V</td></tr>
+      <tr><td><strong>立焊</strong></td><td>电流比平焊小 15~20%，枪嘴向上倾斜 60~70°</td><td>100~120A</td><td>19~21V</td></tr>
+      <tr><td><strong>横焊</strong></td><td>上侧稍作停留防咬边，下侧快过防焊瘤</td><td>130~150A</td><td>20~22V</td></tr>
+      <tr><td><strong>仰焊</strong></td><td>电流最小（比平焊小 30%），严禁长弧，用短弧</td><td>100~110A</td><td>19~20V</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Section 7 缺陷自查 -->
+<div class="section" id="s7">
+  <h2>七、焊接缺陷自查表</h2>
+  <table>
+    <thead><tr><th>缺陷</th><th>外观特征</th><th>主要原因</th><th>解决方法</th></tr></thead>
+    <tbody>
+      <tr><td><strong>气孔</strong></td><td>焊缝表面有小孔</td><td>气体流量不当；气体纯度不够；焊件有油锈；有风</td><td>调大气体流量、清理焊件、挡风</td></tr>
+      <tr><td><strong>飞溅大</strong></td><td>焊件表面大量熔渣颗粒</td><td>电流电压不匹配；电感不当</td><td>重新匹配参数</td></tr>
+      <tr><td><strong>未熔合</strong></td><td>焊缝与母材之间有缝隙</td><td>电流太小；速度太快；角度不对</td><td>增大电流；减慢速度；调整角度</td></tr>
+      <tr><td><strong>咬边</strong></td><td>焊缝边缘凹陷</td><td>速度太快；电压过高；两侧停留不够</td><td>两侧稍作停留；调整参数</td></tr>
+      <tr><td><strong>烧穿</strong></td><td>焊缝有洞（薄板常见）</td><td>电流过大；速度太慢</td><td>减小电流；加快速度</td></tr>
+      <tr><td><strong>焊缝过高</strong></td><td>焊缝凸起过高</td><td>速度太慢；送丝太快</td><td>加快速度或减小送丝</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Section 8 收尾 -->
+<div class="section" id="s8">
+  <h2>八、焊后收尾工作</h2>
+  <ol>
+    <li><strong>关闭气瓶阀门</strong>（顺时针旋紧）</li>
+    <li><strong>按焊枪开关放气</strong>：释放气管内残余气体</li>
+    <li><strong>关闭焊机电源</strong></li>
+    <li><strong>清理焊枪</strong>：清除喷嘴内壁飞溅物，检查导电嘴磨损（磨损则更换）</li>
+    <li><strong>检查焊缝</strong>：目视检查焊缝外观，必要时做敲渣清理</li>
+    <li><strong>设备归位</strong>：盘好电缆、气管，焊机妥善放置</li>
+  </ol>
+</div>
+
+<!-- Section 9 Q&A -->
+<div class="section" id="s9">
+  <h2>九、新手常见问题 Q&amp;A</h2>
+
+  <div class="qa-item">
+    <div class="qa-q">Q1：引不起弧怎么办？</div>
+    <div class="qa-a">
+      <ul>
+        <li>检查电源是否打开</li>
+        <li>检查搭铁线是否夹紧且接触良好</li>
+        <li>检查焊丝端部是否已剪成尖角</li>
+        <li>检查极性是否正确（DCEP）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q">Q2：焊丝送不动怎么办？</div>
+    <div class="qa-a">
+      <ul>
+        <li>送丝滚轮压紧力是否太小</li>
+        <li>送丝滚轮 V 型槽是否与焊丝直径匹配</li>
+        <li>焊枪电缆是否弯折或被压住</li>
+        <li>导电嘴是否堵塞（更换）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q">Q3：为什么飞溅特别大？</div>
+    <div class="qa-a">
+      <ul>
+        <li>最常见原因：电流电压不匹配。先检查声音判断，再按公式调整</li>
+        <li>气体流量是否太小</li>
+        <li>焊件表面是否清洁</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q">Q4：焊丝老是粘在工件上？</div>
+    <div class="qa-a">
+      <ul>
+        <li>电流（送丝速度）偏大，电压偏低</li>
+        <li>引弧时焊丝伸出太长（应控制在 10~15mm）</li>
+        <li>引弧动作太慢，接触时间过长</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q">Q5：焊缝发黑、有渣？</div>
+    <div class="qa-a">
+      <ul>
+        <li>气体流量不够，或气管有漏气</li>
+        <li>焊枪角度不对（推焊法保护更好）</li>
+        <li>焊件表面有油锈未清理</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q">Q6：薄板一焊就穿？</div>
+    <div class="qa-a">
+      <ul>
+        <li>电流太大 ← <strong>最可能原因</strong></li>
+        <li>焊接速度太慢</li>
+        <li>尝试断续焊接（点焊）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 10 练习路径 -->
+<div class="section" id="s10">
+  <h2>十、推荐练习路径</h2>
+  <ol>
+    <li><strong>先在废钢板上练习</strong>（找一些厚度 3~6mm 的废弃钢板）</li>
+    <li><strong>第一步</strong>：不引弧，只练习握枪姿势和匀速移动</li>
+    <li><strong>第二步</strong>：练习引弧和直线运丝，在钢板上焊出直线</li>
+    <li><strong>第三步</strong>：练习锯齿形摆动，焊出均匀宽度的焊缝</li>
+    <li><strong>第四步</strong>：练习对接焊 —— 两块钢板并排，焊接拼缝</li>
+    <li><strong>第五步</strong>：练习 T 型角焊（立板 + 底板）</li>
+    <li><strong>循序渐进</strong>：平焊熟练后再练立焊、横焊、仰焊</li>
+  </ol>
+</div>
+
+<!-- References -->
+<div class="section">
+  <h2>参考资料</h2>
+  <ul class="ref-list">
+    <li><a href="https://www.megmeet-welding.com/news/user-guide-of-gmaw-welding" target="_blank">麦格米特焊接教程：气体保护焊机二保焊使用方法</a></li>
+    <li><a href="https://www.megmeet-welding.com/news/how-to-use-carbon-dioxide-welding" target="_blank">麦格米特：二氧化碳保护焊基本原理与操作</a></li>
+    <li><a href="https://m.sohu.com/a/687623771_694777/" target="_blank">搜狐：新手快速学会二保焊，保姆式教程</a></li>
+    <li><a href="https://www.sohu.com/a/1007261902_694777" target="_blank">搜狐：二保焊实操全攻略 —— 立/横/平/仰手法与参数详解</a></li>
+    <li><a href="https://zhuanlan.zhihu.com/p/2037195488567497647" target="_blank">知乎：3 分钟学会二保焊电流电压调节公式</a></li>
+    <li><a href="http://www.weldhome.com.cn/index.php/index/show_xy/2009" target="_blank">焊接工匠网：二保焊焊接工艺参数调节</a></li>
+    <li><a href="https://www.millerwelds.com/resources/article-library/understanding-the-basics-of-mig-welding-for-mild-steel" target="_blank">Miller Welds: Understanding the Basics of MIG Welding</a></li>
+    <li><a href="https://www.millerwelds.com/resources/article-library/mig-welding-tips-and-techniques-for-beginners" target="_blank">Miller Welds: MIG Welding Tips and Techniques for Beginners</a></li>
+    <li><a href="https://esab.com/ca/nam_en/esab-university/blogs/mastering-mig-welding-process-and-techniques-for-beginners/" target="_blank">ESAB: Mastering MIG Welding — Process and Techniques for Beginners</a></li>
+    <li><a href="https://yeswelder.com/blogs/yeswelder/how-to-setup-and-use-your-mig-welder-for-the-first-time" target="_blank">YESWELDER: How to Setup and Use Your MIG Welder for the First Time</a></li>
+    <li><a href="https://m.sohu.com/a/785584649_120083912/" target="_blank">搜狐：三调三控 — 二保焊新手入门核心口诀</a></li>
+    <li><a href="https://baijiahao.baidu.com/s?id=1775730826334175684" target="_blank">百家号：二保焊安全操作规范及特种作业操作证简介</a></li>
+  </ul>
+</div>
+
+<!-- Final note -->
+<div class="final-note">
+  <strong>最后叮嘱</strong>：二保焊"易学难精"—— 上手不难，但要焊得好、焊得稳，需要大量练习。每次焊接后自我检查焊缝质量，记录所用参数，逐步积累经验。<strong>安全永远是第一位，不要为了"试一下"而忽略防护。</strong>
+</div>
+
+</div>
+</body>
+</html>
